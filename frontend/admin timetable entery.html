@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Timetable Entry</title>
+    <link rel="stylesheet" href="admin timetable entery.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="admin dashboard.html"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="admin timetable entery.html"><i class="fa-solid fa-chalkboard-teacher"></i> Add</a></li>
+                <li><a href="admin edit page.html"><i class="fa-solid fa-user-check"></i> Edit</a></li>
+                <li><a href="general timetable.html"><i class="fa-solid fa-file-alt"></i> Overview</a></li>
+                <li><a href="#"><i class="fa-solid fa-cog"></i> Settings</a></li>
+                <li><a href="admin login.html"><i class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+    <div class="container">
+        <h1>Admin Timetable Entry</h1>
+        
+        <form id="timetableForm">
+            <div class="form-group">
+                <label for="day">Day of the Week</label>
+                <select id="day" name="day">
+                    <option value="monday">Monday</option>
+                    <option value="tuesday" selected>Tuesday</option>
+                    <option value="wednesday">Wednesday</option>
+                    <option value="thursday">Thursday</option>
+                    <option value="friday">Friday</option>
+                    <option value="saturday">Saturday</option>
+                    <option value="sunday">Sunday</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="startTime">Start Time</label>
+                <div class="time-input">
+                    <input type="text" id="startTime" name="startTime" placeholder="HH:MM AM/PM" value="05:51 pm">
+                    <div class="time-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm.5-18h-1v8.5l6.5 3.9.67-1.1-6.17-3.7v-7.6z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="endTime">End Time</label>
+                <div class="time-input">
+                    <input type="text" id="endTime" name="endTime" placeholder="HH:MM AM/PM" value="05:54 pm">
+                    <div class="time-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm.5-18h-1v8.5l6.5 3.9.67-1.1-6.17-3.7v-7.6z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="room">Lecture Room</label>
+                <input type="text" id="room" name="room" placeholder="Enter lecture room" value="dfgh">
+            </div>
+            
+            <div class="form-group">
+                <label for="year">Select Year</label>
+                <select id="year" name="year">
+                    <option value="1st">1st Year</option>
+                    <option value="2nd" selected>2nd Year</option>
+                    <option value="3rd">3rd Year</option>
+                    <option value="4th">4th Year</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="program">Select Program</label>
+                <select id="program" name="program">
+                    <option value="mining" selected>Mining</option>
+                    <option value="petroleum">Petroleum Engineering</option>
+                    <option value="geological">Geological Engineering</option>
+                    <option value="electrical">Electrical Engineering</option>
+                    <option value="computer">Computer Science</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="courseCode">Course Code</label>
+                <input type="text" id="courseCode" name="courseCode" placeholder="Enter course code" value="CE 277">
+            </div>
+            
+            <div class="form-group">
+                <label for="lecturer">Lecturer's Name</label>
+                <input type="text" id="lecturer" name="lecturer" placeholder="Enter lecturer's name" value="Evans">
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit Timetable</button>
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('timetableForm');
+            const startTimeInput = document.getElementById('startTime');
+            const endTimeInput = document.getElementById('endTime');
+            fetch('http://localhost:4000/api/timetable', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+})
+.then(response => response.json())
+.then(data => {
+    alert(data.message || 'Timetable saved!');
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('Something went wrong while saving the timetable.');
+});
+
+            // Simple time picker functionality
+            const setupTimePicker = (inputElement) => {
+                const timeIcon = inputElement.nextElementSibling;
+                
+                timeIcon.addEventListener('click', function() {
+                    // In a real implementation, you would show a time picker here
+                    // For this example, we'll just focus the input
+                    inputElement.focus();
+                });
+                
+                // Basic time validation
+                inputElement.addEventListener('blur', function() {
+                    const value = inputElement.value.trim();
+                    if (value && !isValidTime(value)) {
+                        alert('Please enter a valid time in HH:MM AM/PM format');
+                        inputElement.value = '';
+                    }
+                });
+            };
+            
+            // Simple time validation function
+            function isValidTime(timeStr) {
+                const pattern = /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(am|pm|AM|PM)$/;
+                return pattern.test(timeStr);
+            }
+            
+            setupTimePicker(startTimeInput);
+            setupTimePicker(endTimeInput);
+            
+            // Form submission handler
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = {
+                    day: document.getElementById('day').value,
+                    startTime: startTimeInput.value,
+                    endTime: endTimeInput.value,
+                    room: document.getElementById('room').value,
+                    year: document.getElementById('year').value,
+                    program: document.getElementById('program').value,
+                    courseCode: document.getElementById('courseCode').value,
+                    lecturer: document.getElementById('lecturer').value
+                };
+                
+                // Validate form data
+                if (!formData.room) {
+                    alert('Please enter a lecture room');
+                    return;
+                }
+                
+                if (!formData.courseCode) {
+                    alert('Please enter a course code');
+                    return;
+                }
+                
+                if (!formData.lecturer) {
+                    alert('Please enter a lecturer name');
+                    return;
+                }
+                
+                // Here you would typically send the data to your server
+                console.log('Timetable entry submitted:', formData);
+                alert('Timetable entry submitted successfully!');
+                
+                // For demonstration purposes, we're just showing an alert
+                // In a real application, you would handle the form submission with AJAX
+            });
+        });
+    </script>
+</body>
+</html>

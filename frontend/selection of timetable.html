@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMaT Timetable Portal - Glasgow</title>
+    <link rel="stylesheet" href="selection of  timetable.css">
+</head>
+<body>
+    <div class="container">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6IzE2NmIwYTt9LmNscy0ye2ZpbGw6IzE2NmIwYTt9LmNscy0ze2ZpbGw6IzRjOTcxNjt9LmNscy00e2ZpbGw6IzRjOTcxNjt9LmNscy01e2ZpbGw6IzMzMzt9LmNscy02e2ZpbGw6I2NlYTkxYjt9PC9zdHlsZT48L2RlZnM+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMjAsMjBIMjIwYTAsMCwwLDAsMSwwLDBWMTgwYTIwLDIwLDAsMCwxLTIwLDIwSDQwYTIwLDIwLDAsMCwxLTIwLTIwVjIwYTAsMCwwLDAsMSwwLDBaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjA2LDE5MEg0MGEyMCwyMCwwLDAsMS0yMC0yMFYyMEwyMCwxMEgyMzBMMjIwLDIwVjE3MEExMjAsMTIwLDAsMCwxLDIwNiwxOTBaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNMTkwLDE4MEg1MGExMCwxMCwwLDAsMS0xMC0xMFYzMEg0MGE1LDUsMCwwLDAtNSw1VjE3NWE1LDUsMCwwLDAsNSw1SDE5MHoiLz48Y2lyY2xlIGNsYXNzPSJjbHMtNiIgY3g9IjEyMCIgY3k9IjgwIiByPSIzNSIvPjxlbGxpcHNlIGNsYXNzPSJjbHMtMyIgY3g9IjEyMCIgY3k9IjE0MCIgcng9IjUwIiByeT0iMjAiLz48cGF0aCBjbGFzcz0iY2xzLTUiIGQ9Ik0xMTAsNjBIMTMwYTAsMCwwLDAsMSwwLDB2MzBhMTAsMTAsMCwwLDEtMTAsMTBoLTEwYTAsMCwwLDAsMSwwLDBWNjBBMCwwLDAsMCwxLDExMCw2MFoiLz48cGF0aCBjbGFzcz0iY2xzLTUiIGQ9Ik0xMTAsNjVIMTI1djIwaC0xNXoiLz48cGF0aCBkPSJNODUsMTQwSDkwdjVoNXY1SDg1eiIvPjxwYXRoIGQ9Ik0xNDAsMTQwaDE1djEwaC0xNXoiLz48L3N2Zz4=" alt="University of Mines and Technology Logo" class="logo">
+        
+        <h1>Timetable <span>Selection Page</span></h1>
+        
+        <div class="form-group">
+            <label class="form-label">Select Academic Year</label>
+            <select id="academicYear">
+                <option value="">Select Year</option>
+                <option value="2024-2025">2024-2025</option>
+                <option value="2023-2024">2023-2024</option>
+                <option value="2022-2023">2022-2023</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label class="form-label">Select Academic Program</label>
+            <select id="academicProgram">
+                <option value="">Select Program</option>
+                <option value="computer-science">BSc. Computer Science</option>
+                <option value="mining-engineering">BSc. Mining Engineering</option>
+                <option value="electrical-engineering">BSc. Electrical Engineering</option>
+                <option value="geological-engineering">BSc. Geological Engineering</option>
+                <option value="petroleum-engineering">BSc. Petroleum Engineering</option>
+            </select>
+        </div>
+        
+        <button id="viewTimetableBtn" class="btn">View Timetable</button>
+        
+        <footer>
+            <p>&copy; 2024 University of Mines and Technology | <a href="#">Contact Support</a></p>
+        </footer>
+    </div>
+
+    <script>
+    document.getElementById('viewTimetableBtn').addEventListener('click', function () {
+        const year = document.getElementById('academicYear').value;
+        const program = document.getElementById('academicProgram').value;
+
+        if (!year || !program) {
+            alert('Please select both Academic Year and Program to view the timetable.');
+            return;
+        }
+
+        // Fetch timetable from backend
+        fetch(`http://localhost:4000/api/timetable?year=${year}&program=${program}`)
+            .then(res => res.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = '<p>No timetable found for this selection.</p>';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Course Code</th>
+                            <th>Lecturer</th>
+                            <th>Room</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(entry => `
+                            <tr>
+                                <td>${entry.day}</td>
+                                <td>${entry.startTime}</td>
+                                <td>${entry.endTime}</td>
+                                <td>${entry.courseCode}</td>
+                                <td>${entry.lecturer}</td>
+                                <td>${entry.room}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+
+                resultsDiv.appendChild(table);
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to load timetable.');
+            });
+    });
+</script>
+<div id="results" style="margin-top: 20px;"></div>
+</body>
+</html>

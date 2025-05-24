@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Timetable</title>
+    <link rel="stylesheet" href="timetable.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BSc Computer Science and Engineering - Year 1</h1>
+            <button class="download-btn" id="downloadBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download PDF
+            </button>
+        </div>
+        
+        <div class="view-options">
+            <button class="view-btn active" id="weeklyViewBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Weekly View
+            </button>
+            <button class="view-btn" id="dailyViewBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Daily View
+            </button>
+        </div>
+        
+        <div class="timetable" id="timetableContainer">
+            <!-- Monday -->
+            <div class="day-container">
+                <div class="day-header">Monday</div>
+                <div class="empty-day">No classes scheduled</div>
+            </div>
+            
+            <!-- Tuesday -->
+            <div class="day-container">
+                <div class="day-header">Tuesday</div>
+                <div class="empty-day">No classes scheduled</div>
+            </div>
+            
+            <!-- Wednesday -->
+            <div class="day-container">
+                <div class="day-header">Wednesday</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Course Code</th>
+                            <th>Lecture Room</th>
+                            <th>Lecturer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>11:40 pm - 02:38 pm</td>
+                            <td>CE 277</td>
+                            <td>SR 1</td>
+                            <td>Evans</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Thursday -->
+            <div class="day-container">
+                <div class="day-header">Thursday</div>
+                <div class="empty-day">No classes scheduled</div>
+            </div>
+            
+            <!-- Friday -->
+            <div class="day-container">
+                <div class="day-header">Friday</div>
+                <div class="empty-day">No classes scheduled</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const weeklyViewBtn = document.getElementById('weeklyViewBtn');
+            const dailyViewBtn = document.getElementById('dailyViewBtn');
+            const timetableContainer = document.getElementById('timetableContainer');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            // Sample timetable data
+            const timetableData = {
+                monday: [],
+                tuesday: [],
+                wednesday: [
+                    {
+                        time: '11:40 pm - 02:38 pm',
+                        courseCode: 'CE 277',
+                        lectureRoom: 'SR 1',
+                        lecturer: 'Evans'
+                    }
+                ],
+                thursday: [],
+                friday: []
+            };
+            
+            // Weekly view is the default view (showing all days)
+            function setWeeklyView() {
+                weeklyViewBtn.classList.add('active');
+                dailyViewBtn.classList.remove('active');
+                
+                // Show all day containers
+                const dayContainers = timetableContainer.querySelectorAll('.day-container');
+                dayContainers.forEach(container => {
+                    container.style.display = 'block';
+                });
+            }
+            
+            // Daily view (showing only days with classes)
+            function setDailyView() {
+                dailyViewBtn.classList.add('active');
+                weeklyViewBtn.classList.remove('active');
+                
+                // Hide days with no classes
+                const dayContainers = timetableContainer.querySelectorAll('.day-container');
+                dayContainers.forEach(container => {
+                    const hasEmptyDay = container.querySelector('.empty-day');
+                    if (hasEmptyDay) {
+                        container.style.display = 'none';
+                    } else {
+                        container.style.display = 'block';
+                    }
+                });
+            }
+            
+            // Event listeners for view buttons
+            weeklyViewBtn.addEventListener('click', setWeeklyView);
+            dailyViewBtn.addEventListener('click', setDailyView);
+            
+            // Download PDF functionality
+            downloadBtn.addEventListener('click', function() {
+                alert('Downloading PDF timetable for BSc Computer Science and Engineering - Year 1');
+                // In a real application, this would trigger a PDF download
+                // window.location.href = '/download-timetable?format=pdf&program=BSc+Computer+Science+and+Engineering&year=1';
+            });
+            
+            // Initialize with weekly view
+            setWeeklyView();
+        });
+    </script>
+</body>
+</html>

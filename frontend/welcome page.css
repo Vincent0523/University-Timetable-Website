@@ -1,0 +1,139 @@
+body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: #1e7a1e;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            object-fit: contain;
+            background-color: white;
+            overflow: hidden;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            margin: 10px 0;
+            font-weight: normal;
+        }
+        
+        h3 {
+            font-size: 1.2rem;
+            margin: 10px 0 30px;
+            font-weight: normal;
+        }
+        
+        .sign-in-btn {
+            background-color: #f7d417;
+            color: #333;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sign-in-btn:hover {
+            background-color: #e6c415;
+            transform: scale(1.05);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 30px 20px;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 5px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #1e7a1e;
+        }
+        
+        .feature-card h2 {
+            color: #1e7a1e;
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        
+        .feature-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "✓";
+            color: #1e7a1e;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        /* Logo styling */
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature-card {
+                width: 100%;
+                max-width: 400px;
+            }
+        }

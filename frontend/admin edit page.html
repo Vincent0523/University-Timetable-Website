@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Schedule Entry</title>
+    <link rel="stylesheet" href="admin edit page.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="admin dashboard.html"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="admin timetable entery.html"><i class="fa-solid fa-chalkboard-teacher"></i> Add</a></li>
+                <li><a href="admin edit page.html"><i class="fa-solid fa-user-check"></i> Edit</a></li>
+                <li><a href="general timetable.html"><i class="fa-solid fa-file-alt"></i> Overview</a></li>
+                <li><a href="#"><i class="fa-solid fa-cog"></i> Settings</a></li>
+                <li><a href="admin login.html"><i class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+    <div class="container">
+        <h1>Edit Schedule Entry</h1>
+        
+        <form id="scheduleForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dayOfWeek">Day of the Week</label>
+                    <select id="dayOfWeek" name="dayOfWeek">
+                        <option value="Monday" selected>Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startTime">Start Time</label>
+                    <div class="time-input">
+                        <input type="text" id="startTime" name="startTime" value="02:00 pm">
+                        <span class="time-icon">⏰</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="endTime">End Time</label>
+                    <div class="time-input">
+                        <input type="text" id="endTime" name="endTime" value="04:00 pm">
+                        <span class="time-icon">⏰</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="classRoom">Class / Room</label>
+                    <input type="text" id="classRoom" name="classRoom" value="SR 1">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="academicYear">Academic Year</label>
+                    <select id="academicYear" name="academicYear">
+                        <option value="1st Year" selected>1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="academicProgram">Academic Program</label>
+                    <select id="academicProgram" name="academicProgram">
+                        <option value="Computer Science & Engineering" selected>Computer Science & Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="courseCode">Course Code</label>
+                    <input type="text" id="courseCode" name="courseCode" value="CE 277">
+                </div>
+                
+                <div class="form-group">
+                    <label for="lecturerName">Lecturer's Name</label>
+                    <input type="text" id="lecturerName" name="lecturerName" value="Evans Obu">
+                </div>
+            </div>
+            
+            <div class="button-row">
+                <button type="submit" class="btn btn-primary" id="updateButton">Update Schedule</button>
+                <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        // Load timetable entry by ID
+        async function loadEntry() {
+            if (!id) {
+                alert("No timetable ID provided.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:4000/api/admin/timetable/${id}`);
+                if (!response.ok) throw new Error("Failed to fetch schedule data");
+
+                const data = await response.json();
+
+                document.getElementById('dayOfWeek').value = data.dayOfWeek;
+                document.getElementById('startTime').value = data.startTime;
+                document.getElementById('endTime').value = data.endTime;
+                document.getElementById('classRoom').value = data.classRoom;
+                document.getElementById('academicYear').value = data.academicYear;
+                document.getElementById('academicProgram').value = data.academicProgram;
+                document.getElementById('courseCode').value = data.courseCode;
+                document.getElementById('lecturerName').value = data.lecturerName;
+            } catch (err) {
+                alert("Error loading schedule entry.");
+                console.error(err);
+            }
+        }
+
+        loadEntry(); // Call when page loads
+
+        // Handle form submission (update)
+        document.getElementById('scheduleForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = {
+                dayOfWeek: document.getElementById('dayOfWeek').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                classRoom: document.getElementById('classRoom').value,
+                academicYear: document.getElementById('academicYear').value,
+                academicProgram: document.getElementById('academicProgram').value,
+                courseCode: document.getElementById('courseCode').value,
+                lecturerName: document.getElementById('lecturerName').value
+            };
+
+            try {
+                const response = await fetch(`http://localhost:4000/api/admin/timetable/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) throw new Error("Failed to update schedule");
+
+                alert("Schedule updated successfully!");
+                window.location.href = "/admin/schedules"; // redirect
+            } catch (err) {
+                alert("Error updating schedule.");
+                console.error(err);
+            }
+        });
+
+        // Cancel button handler
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+                window.location.href = '/admin/schedules';
+            }
+        });
+
+        // Time icon click (mocked time picker)
+        const timeInputs = document.querySelectorAll('.time-input');
+        timeInputs.forEach(function (input) {
+            const icon = input.querySelector('.time-icon');
+            const timeField = input.querySelector('input');
+
+            icon.addEventListener('click', function () {
+                alert('Time picker would open here');
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

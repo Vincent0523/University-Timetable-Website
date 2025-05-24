@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign In</title>
+    <link rel="stylesheet" href="student login.css">
+</head>
+<body>
+    <div class="background">
+        <div class="green-bg"></div>
+        <div class="yellow-diagonal"></div>
+    </div>
+    
+    <div class="logo-container">
+        <img src="logo.png" alt="UMaT Logo" class="university-logo">
+        <h1 class="university-name">Drobo</h1>
+        <h2 class="university-subtext">Senior Hight School</h2>
+        <p class="university-motto">Knowledge, truth & excellence</p>
+    </div>
+    
+    <div class="login-container">
+        <h2 class="login-title">Student signin</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="Enter your username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password">
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" class="btn-sign-in">Sign In</button>
+        </form>
+        
+        <div class="contact-us">
+            <a href="#">Contact Us</a>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Here you would typically send the login credentials to your server
+            // For demonstration purposes, we'll just log them to the console
+            console.log('Login attempt:', { username, password });
+            
+            // Example validation
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+            
+            // Sample login logic - in a real app this would be handled by your backend
+            alert('Login attempt processed. In a real application, this would connect to your server.');
+            
+            // You can redirect the user after successful login
+            window.location.href = 'selection of timetable.html';
+        });
+    </script>
+</body>
+</html>

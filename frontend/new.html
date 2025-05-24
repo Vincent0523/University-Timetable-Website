@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Timetable Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .header-btn.logout {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(44, 62, 80, 0.95);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(52, 152, 219, 0.2);
+            border-left-color: #3498db;
+            color: white;
+        }
+
+        .sidebar-nav .icon {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .content.full-width {
+            margin-left: 0;
+        }
+
+        .page {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title .icon {
+            font-size: 36px;
+        }
+
+        /* Login Page */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(31, 38, 135, 0.37);
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+            background: white;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        /* Timetable */
+        .timetable-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .timetable th, .timetable td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .timetable th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .timetable tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .subject-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 3px 0;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .subject-card .subject-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .subject-card .details {
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            margin-top: 8px;
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn.edit {
+            background: #f39c12;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Class List */
+        .class-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .class-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .class-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .class-item:last-child {
+            border-bottom: none;
+        }
+
+        .class-info {
+            flex: 1;
+        }
+
+        .class-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .class-details {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            min-width: 200px;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Demo credentials box */
+        .demo-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .demo-box h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+            
+            .class-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .header-nav {
+                gap: 10px;
+            }
+            
+            .header-btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                🎓 University Timetable System
+            </div>
+            <div class="header-nav">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <button class="header-btn" onclick="showPublicView()" id="publicViewBtn">Public View</button>
+                <button class="header-btn logout" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-title">🔐 Admin Login</div>
+        <form onsubmit="login(event)">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="btn">Login to Dashboard</button>
+        </form>
+        <div id="loginMessage"></div>
+        <div class="demo-box">
+            <h4>🔑 Demo Credentials:</h4>
+            <p><strong>Username:</strong> admin</p>
+            <p><strong>Password:</strong> admin123</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <nav class="sidebar-nav">
+                <li><a href="#" onclick="showPage('home')" class="nav-link active" data-page="home">
+                    <span class="icon">🏠</span> Home
+                </a></li>
+                <li><a href="#" onclick="showPage('overview')" class="nav-link" data-page="overview">
+                    <span class="icon">📊</span> Overview
+                </a></li>
+                <li><a href="#" onclick="showPage('add')" class="nav-link" data-page="add">
+                    <span class="icon">➕</span> Add Class
+                </a></li>
+                <li><a href="#" onclick="showPage('edit')" class="nav-link" data-page="edit">
+                    <span class="icon">✏️</span> Edit Classes
+                </a></li>
+            </nav>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content" id="content">
+            <!-- Home Page -->
+            <div class="page active" id="homePage">
+                <div class="page-title">
+                    <span class="icon">🏠</span>
+                    Dashboard Home
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="totalClasses">0</div>
+                        <div class="label">Total Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="totalCourses">0</div>
+                        <div class="label">Courses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="totalInstructors">0</div>
+                        <div class="label">Instructors</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">5</div>
+                        <div class="label">Days/Week</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 20px; color: #2c3e50;">📅 Current Week Timetable</h3>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="homeCourseFiler">Filter by Course:</label>
+                        <select id="homeCourseFilter" onchange="filterHomeTimetable()">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="timetable-container">
+                    <table class="timetable" id="homeTimetable">
+                        <!-- Timetable will be generated here -->
+                    </table>
+                </div>
+            </div>
+
+            <!-- Overview Page -->
+            <div class="page" id="overviewPage">
+                <div class="page-title">
+                    <span class="icon">📊</span>
+                    System Overview
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="overviewTotalClasses">0</div>
+                        <div class="label">Total Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="mondayClasses">0</div>
+                        <div class="label">Monday Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="tuesdayClasses">0</div>
+                        <div class="label">Tuesday Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="wednesdayClasses">0</div>
+                        <div class="label">Wednesday Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="thursdayClasses">0</div>
+                        <div class="label">Thursday Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="fridayClasses">0</div>
+                        <div class="label">Friday Classes</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin: 30px 0 20px; color: #2c3e50;">📋 All Classes List</h3>
+                <div class="class-list" id="overviewClassList">
+                    <!-- Class list will be generated here -->
+                </div>
+            </div>
+
+            <!-- Add Class Page -->
+            <div class="page" id="addPage">
+                <div class="page-title">
+                    <span class="icon">➕</span>
+                    Add New Class
+                </div>
+                <form onsubmit="addClass(event)" id="addClassForm">
+                    <div class="form-group">
+                        <label for="addCourse">Course:</label>
+                        <input type="text" id="addCourse" required placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="form-group">
+                        <label for="addSubject">Subject:</label>
+                        <input type="text" id="addSubject" required placeholder="e.g., Data Structures">
+                    </div>
+                    <div class="form-group">
+                        <label for="addInstructor">Instructor:</label>
+                        <input type="text" id="addInstructor" required placeholder="e.g., Dr. Smith">
+                    </div>
+                    <div class="form-group">
+                        <label for="addDay">Day:</label>
+                        <select id="addDay" required>
+                            <option value="">Select Day</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStartTime">Start Time:</label>
+                        <input type="time" id="addStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEndTime">End Time:</label>
+                        <input type="time" id="addEndTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addRoom">Room:</label>
+                        <input type="text" id="addRoom" required placeholder="e.g., CS-101">
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Class</button>
+                    <button type="button" class="btn" onclick="clearAddForm()">Clear Form</button>
+                </form>
+                <div id="addMessage"></div>
+            </div>
+
+            <!-- Edit Classes Page -->
+            <div class="page" id="editPage">
+                <div class="page-title">
+                    <span class="icon">✏️</span>
+                    Edit Classes
+                </div>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="editCourseFilter">Filter by Course:</label>
+                        <select id="editCourseFilter" onchange="filterEditClasses()">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="editDayFilter">Filter by Day:</label>
+                        <select id="editDayFilter" onchange="filterEditClasses()">
+                            <option value="">All Days</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="class-list" id="editClassList">
+                    <!-- Editable class list will be generated here -->
+                </div>
+                <div id="editMessage"></div>
+            </div>
+
+            <!-- Public View Page -->
+            <div class="page" id="publicPage">
+                <div class="page-title">
+                    <span class="icon">👥</span>
+                    Public Timetable View
+                </div>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="publicCourseFilter">Filter by Course:</label>
+                        <select id="publicCourseFilter" onchange="filterPublicTimetable()">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="publicDayFilter">Filter by Day:</label>
+                        <select id="publicDayFilter" onchange="filterPublicTimetable()">
+                            <option value="">All Days</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="timetable-container">
+                    <table class="timetable" id="publicTimetable">
+                        <!-- Public timetable will be generated here -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample timetable data
+        let timetableData = [
+            {
+                id: 1,
+                course: "Computer Science",
+                subject: "Data Structures",
+                instructor: "Dr. Smith",
+                day: "Monday",
+                startTime: "09:00",
+                endTime: "10:30",
+                room: "CS-101"
+            },
+            {
+                id: 2,
+                course: "Computer Science",
+                subject: "Algorithms",
+                instructor: "Prof. Johnson",
+                day: "Monday",
+                startTime: "11:00",
+                endTime: "12:30",
+                room: "CS-102"
+            },
+            {
+                id: 3,
+                course: "Mathematics",
+                subject: "Calculus I",
+                instructor: "Dr. Williams",
+                day: "Tuesday",
+                startTime: "09:00",
+                endTime: "10:30",
+                room: "MATH-201"
+            },
+            {
+                id: 4,
+                course: "Physics",
+                subject: "Mechanics",
+                instructor: "Prof. Brown",
+                day: "Wednesday",
+                startTime: "14:00",
+                endTime: "15:30",
+                room: "PHY-301"
+            },
+            {
+                id: 5,
+                course: "Computer Science",
+                subject: "Database Systems",
+                instructor: "Dr. Davis",
+                day: "Thursday",
+                startTime: "10:00",
+                endTime: "11:30",
+                room: "CS-103"
+            },
+            {
+                id: 6,
+                course: "Mathematics",
+                subject: "Linear Algebra",
+                instructor: "Prof. Wilson",
+                day: "Friday",
+                startTime: "13:00",
+                endTime: "14:30",
+                room: "MATH-202"
+            },
+            {
+                id: 7,
+                course: "Chemistry",
+                subject: "Organic Chemistry",
+                instructor: "Dr. Lee",
+                day: "Tuesday",
+                startTime: "15:00",
+                endTime: "16:30",
+                room: "CHEM-101"
+            },
+            {
+                id: 8,
+                course: "Physics",
+                subject: "Thermodynamics",
+                instructor: "Prof. Garcia",
+                day: "Thursday",
+                startTime: "13:00",
+                endTime: "14:30",
+                room: "PHY-302"
+            }
+        ];
+
+        let isLoggedIn = false;
+        let currentEditingId = null;
+
+        // Login functionality
+        function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (username === 'admin' && password === 'admin123') {
+                isLoggedIn = true;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'flex';
+                document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('sidebar').classList.add('active');
+                showMessage('loginMessage', 'Login successful! Welcome to the admin dashboard.', 'success');
+                initializeDashboard();
+            } else {
+                showMessage('loginMessage', 'Invalid username or password!', 'error');
+            }
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginMessage').innerHTML = '';
+        }
+
+        // Navigation
+        function showPage(pageName) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageName + 'Page').classList.add('active');
+            
+            // Add active class to current nav link
+            document.querySelector(`[onclick="showPage('${pageName}')"]`).classList.add('active');
+            
+            // Load page-specific content
+            if (pageName === 'dashboard') {
+                loadDashboard();
+            } else if (pageName === 'timetable') {
+                loadTimetable();
+            } else if (pageName === 'manage') {
+                loadManagePage();
+            }
+        }
+
+        // Dashboard functionality
+        function initializeDashboard() {
+            loadDashboard();
+        }
+
+        function loadDashboard() {
+            const totalCourses = [...new Set(timetableData.map(item => item.course))].length;
+            const totalSubjects = timetableData.length;
+            const totalInstructors = [...new Set(timetableData.map(item => item.instructor))].length;
+            
+            document.getElementById('totalCourses').textContent = totalCourses;
+            document.getElementById('totalSubjects').textContent = totalSubjects;
+            document.getElementById('totalInstructors').textContent = totalInstructors;
+            
+            // Load recent activities
+            loadRecentActivities();
+        }
+
+        function loadRecentActivities() {
+            const activitiesHtml = `
+                <div class="activity-item">
+                    <span class="activity-time">10:30 AM</span>
+                    <span class="activity-desc">New subject "Data Structures" added</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">09:15 AM</span>
+                    <span class="activity-desc">Timetable updated for Monday</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">Yesterday</span>
+                    <span class="activity-desc">3 new courses registered</span>
+                </div>
+            `;
+            document.getElementById('recentActivities').innerHTML = activitiesHtml;
+        }
+
+        // Timetable display functionality
+        function loadTimetable() {
+            displayTimetable();
+        }
+
+        function displayTimetable() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const timetableGrid = document.getElementById('timetableGrid');
+            
+            let gridHtml = '<div class="timetable-header">Weekly Timetable</div>';
+            
+            days.forEach(day => {
+                const dayClasses = timetableData.filter(item => item.day === day);
+                gridHtml += `
+                    <div class="day-section">
+                        <h3 class="day-title">${day}</h3>
+                        <div class="day-classes">
+                `;
+                
+                if (dayClasses.length === 0) {
+                    gridHtml += '<div class="no-classes">No classes scheduled</div>';
+                } else {
+                    dayClasses.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    dayClasses.forEach(cls => {
+                        gridHtml += `
+                            <div class="class-card">
+                                <div class="class-time">${cls.startTime} - ${cls.endTime}</div>
+                                <div class="class-subject">${cls.subject}</div>
+                                <div class="class-course">${cls.course}</div>
+                                <div class="class-instructor">${cls.instructor}</div>
+                                <div class="class-room">Room: ${cls.room}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                gridHtml += '</div></div>';
+            });
+            
+            timetableGrid.innerHTML = gridHtml;
+        }
+
+        // Management page functionality
+        function loadManagePage() {
+            displayManagementTable();
+        }
+
+        function displayManagementTable() {
+            const tableBody = document.getElementById('managementTableBody');
+            let tableHtml = '';
+            
+            timetableData.forEach(item => {
+                tableHtml += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.course}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.instructor}</td>
+                        <td>${item.day}</td>
+                        <td>${item.startTime} - ${item.endTime}</td>
+                        <td>${item.room}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editEntry(${item.id})">Edit</button>
+                            <button class="btn-delete" onclick="deleteEntry(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHtml;
+        }
+
+        // CRUD operations
+        function showAddForm() {
+            document.getElementById('addForm').style.display = 'block';
+            document.getElementById('formTitle').textContent = 'Add New Entry';
+            document.getElementById('submitBtn').textContent = 'Add Entry';
+            clearForm();
+            currentEditingId = null;
+        }
+
+        function hideAddForm() {
+            document.getElementById('addForm').style.display = 'none';
+            clearForm();
+            currentEditingId = null;
+        }
+
+        function clearForm() {
+            document.getElementById('course').value = '';
+            document.getElementById('subject').value = '';
+            document.getElementById('instructor').value = '';
+            document.getElementById('day').value = '';
+            document.getElementById('startTime').value = '';
+            document.getElementById('endTime').value = '';
+            document.getElementById('room').value = '';
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const formData = {
+                course: document.getElementById('course').value,
+                subject: document.getElementById('subject').value,
+                instructor: document.getElementById('instructor').value,
+                day: document.getElementById('day').value,
+                startTime: document.getElementById('startTime').value,
+                endTime: document.getElementById('endTime').value,
+                room: document.getElementById('room').value
+            };
+            
+            // Validation
+            if (!validateForm(formData)) {
+                return;
+            }
+            
+            if (currentEditingId) {
+                // Update existing entry
+                const index = timetableData.findIndex(item => item.id === currentEditingId);
+                if (index !== -1) {
+                    timetableData[index] = { ...formData, id: currentEditingId };
+                    showMessage('formMessage', 'Entry updated successfully!', 'success');
+                }
+            } else {
+                // Add new entry
+                const newId = Math.max(...timetableData.map(item => item.id)) + 1;
+                timetableData.push({ ...formData, id: newId });
+                showMessage('formMessage', 'Entry added successfully!', 'success');
+            }
+            
+            displayManagementTable();
+            loadDashboard();
+            hideAddForm();
+        }
+
+        function validateForm(data) {
+            const messageDiv = document.getElementById('formMessage');
+            
+            // Check if all fields are filled
+            for (let key in data) {
+                if (!data[key].trim()) {
+                    showMessage('formMessage', `Please fill in the ${key} field.`, 'error');
+                    return false;
+                }
+            }
+            
+            // Check time format and logic
+            if (data.startTime >= data.endTime) {
+                showMessage('formMessage', 'End time must be after start time.', 'error');
+                return false;
+            }
+            
+            // Check for conflicts (same day, overlapping times, same room)
+            const conflicts = timetableData.filter(item => {
+                if (currentEditingId && item.id === currentEditingId) {
+                    return false; // Skip current editing item
+                }
+                
+                return item.day === data.day && 
+                       item.room === data.room &&
+                       ((data.startTime >= item.startTime && data.startTime < item.endTime) ||
+                        (data.endTime > item.startTime && data.endTime <= item.endTime) ||
+                        (data.startTime <= item.startTime && data.endTime >= item.endTime));
+            });
+            
+            if (conflicts.length > 0) {
+                showMessage('formMessage', 'Time conflict detected! The room is already booked during this time.', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function editEntry(id) {
+            const entry = timetableData.find(item => item.id === id);
+            if (entry) {
+                document.getElementById('course').value = entry.course;
+                document.getElementById('subject').value = entry.subject;
+                document.getElementById('instructor').value = entry.instructor;
+                document.getElementById('day').value = entry.day;
+                document.getElementById('startTime').value = entry.startTime;
+                document.getElementById('endTime').value = entry.endTime;
+                document.getElementById('room').value = entry.room;
+                
+                document.getElementById('formTitle').textContent = 'Edit Entry';
+                document.getElementById('submitBtn').textContent = 'Update Entry';
+                document.getElementById('addForm').style.display = 'block';
+                currentEditingId = id;
+            }
+        }
+
+        function deleteEntry(id) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                timetableData = timetableData.filter(item => item.id !== id);
+                displayManagementTable();
+                loadDashboard();
+                showMessage('managementMessage', 'Entry deleted successfully!', 'success');
+            }
+        }
+
+        // Search functionality
+        function searchTimetable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const tableBody = document.getElementById('managementTableBody');
+            
+            if (!searchTerm) {
+                displayManagementTable();
+                return;
+            }
+            
+            const filteredData = timetableData.filter(item => 
+                item.course.toLowerCase().includes(searchTerm) ||
+                item.subject.toLowerCase().includes(searchTerm) ||
+                item.instructor.toLowerCase().includes(searchTerm) ||
+                item.day.toLowerCase().includes(searchTerm) ||
+                item.room.toLowerCase().includes(searchTerm)
+            );
+            
+            let tableHtml = '';
+            filteredData.forEach(item => {
+                tableHtml += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.course}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.instructor}</td>
+                        <td>${item.day}</td>
+                        <td>${item.startTime} - ${item.endTime}</td>
+                        <td>${item.room}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editEntry(${item.id})">Edit</button>
+                            <button class="btn-delete" onclick="deleteEntry(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHtml;
+        }
+
+        // Filter functionality
+        function filterTimetable() {
+            const courseFilter = document.getElementById('courseFilter').value;
+            const dayFilter = document.getElementById('dayFilter').value;
+            
+            let filteredData = timetableData;
+            
+            if (courseFilter) {
+                filteredData = filteredData.filter(item => item.course === courseFilter);
+            }
+            
+            if (dayFilter) {
+                filteredData = filteredData.filter(item => item.day === dayFilter);
+            }
+            
+            const tableBody = document.getElementById('managementTableBody');
+            let tableHtml = '';
+            
+            filteredData.forEach(item => {
+                tableHtml += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.course}</td>
+                        <td>${item.subject}</td>
+                        <td>${item.instructor}</td>
+                        <td>${item.day}</td>
+                        <td>${item.startTime} - ${item.endTime}</td>
+                        <td>${item.room}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editEntry(${item.id})">Edit</button>
+                            <button class="btn-delete" onclick="deleteEntry(${item.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHtml;
+        }
+
+        function resetFilters() {
+            document.getElementById('courseFilter').value = '';
+            document.getElementById('dayFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            displayManagementTable();
+        }
+
+        // Utility functions
+        function showMessage(elementId, message, type) {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                messageDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        // Export functionality
+        function exportTimetable() {
+            const dataStr = JSON.stringify(timetableData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'timetable_data.json';
+            link.click();
+            
+            showMessage('managementMessage', 'Timetable exported successfully!', 'success');
+        }
+
+        // Print functionality
+        function printTimetable() {
+            const printWindow = window.open('', '_blank');
+            const printContent = generatePrintableContent();
+            
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Timetable</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .day-section { margin-bottom: 25px; }
+                            .day-title { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+                            .class-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+                            .class-time { font-weight: bold; color: #e74c3c; }
+                            .no-classes { font-style: italic; color: #7f8c8d; }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                    </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function generatePrintableContent() {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            let content = '<div class="header"><h1>Weekly Timetable</h1></div>';
+            
+            days.forEach(day => {
+                const dayClasses = timetableData.filter(item => item.day === day);
+                content += `<div class="day-section"><h2 class="day-title">${day}</h2>`;
+                
+                if (dayClasses.length === 0) {
+                    content += '<div class="no-classes">No classes scheduled</div>';
+                } else {
+                    dayClasses.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    dayClasses.forEach(cls => {
+                        content += `
+                            <div class="class-item">
+                                <div class="class-time">${cls.startTime} - ${cls.endTime}</div>
+                                <div><strong>${cls.subject}</strong> (${cls.course})</div>
+                                <div>Instructor: ${cls.instructor}</div>
+                                <div>Room: ${cls.room}</div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                content += '</div>';
+            });
+            
+            return content;
+        }
+
+        // Initialize filters on page load
+        function initializeFilters() {
+            const courses = [...new Set(timetableData.map(item => item.course))];
+            const courseFilter = document.getElementById('courseFilter');
+            
+            courseFilter.innerHTML = '<option value="">All Courses</option>';
+            courses.forEach(course => {
+                courseFilter.innerHTML += `<option value="${course}">${course}</option>`;
+            });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize filters
+            initializeFilters();
+            
+            // Set default page
+            showPage('dashboard');
+        });
+    </script>
+</body>
+</html>

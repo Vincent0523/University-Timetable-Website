@@ -1,0 +1,153 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Timetable</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="general timetable.css">
+</head>
+<body>
+<div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="admin dashboard.html"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="admin timetable entery.html"><i class="fa-solid fa-chalkboard-teacher"></i> Add</a></li>
+                <li><a href="admin edit page.html"><i class="fa-solid fa-user-check"></i> Edit</a></li>
+                <li><a href="general timetable.html"><i class="fa-solid fa-file-alt"></i> Overview</a></li>
+                <li><a href="#"><i class="fa-solid fa-cog"></i> Settings</a></li>
+                <li><a href="admin login.html"><i class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+
+    <div class="container">
+        <h1>General Timetable</h1>
+        
+        <div class="button-row">
+            <button class="btn btn-primary" id="addScheduleBtn">
+                <i class="fas fa-plus"></i> Add New Schedule
+            </button>
+            <button class="btn btn-success" id="downloadPdfBtn">
+                <i class="fas fa-file-pdf"></i> Download PDF
+            </button>
+        </div>
+        
+        <div class="alert alert-info" id="noLectureAlert">
+            No Lecture scheduled
+        </div>
+        
+        <div class="view-tabs">
+            <button class="view-tab" data-view="weekly">
+                <i class="far fa-calendar-alt"></i> Weekly View
+            </button>
+            <button class="view-tab" data-view="daily">
+                <i class="far fa-calendar-day"></i> Daily View
+            </button>
+            <button class="view-tab active" data-view="course">
+                <i class="far fa-list-alt"></i> View By Course
+            </button>
+        </div>
+        
+        <div class="day-header">
+            <span id="currentDay">Wednesday</span>
+            <i class="fas fa-sync" id="refreshBtn"></i>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Lecture Room</th>
+                    <th>Time</th>
+                    <th>Year</th>
+                    <th>Program</th>
+                    <th>Course Code</th>
+                    <th>Lecturer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleTableBody">
+                <tr>
+                    <td colspan="7" class="empty-state">No classes scheduled</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add/Edit Schedule Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Schedule</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="scheduleForm">
+                    <input type="hidden" id="scheduleId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dayOfWeek">Day of the Week</label>
+                            <select id="dayOfWeek" name="dayOfWeek" required>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday" selected>Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lectureRoom">Lecture Room</label>
+                            <input type="text" id="lectureRoom" name="lectureRoom" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startTime">Start Time</label>
+                            <input type="time" id="startTime" name="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">End Time</label>
+                            <input type="time" id="endTime" name="endTime" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="academicYear">Academic Year</label>
+                            <select id="academicYear" name="academicYear" required>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="program">Academic Program</label>
+                            <input type="text" id="program" name="program" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="courseCode">Course Code</label>
+                            <input type="text" id="courseCode" name="courseCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lecturer">Lecturer's Name</label>
+                            <input type="text" id="lecturer" name="lecturer" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button type="submit" class="btn btn-primary">Save Schedule</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMaT Timetable System</title>
+    <link rel="stylesheet" href="welcome page.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="UMaT logo.png" alt="UMaT Logo" class="logo">
+            
+            <h1>Students Timetable Management System</h1>
+            <h2>University of Mines and Technology (UMaT)</h2>
+            <h3>Academic Scheduling Platform for UMaT Community</h3>
+            
+            <button id="sign-in-btn" class="sign-in-btn" type="button">SIGN IN</button>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <h2>For Administrators</h2>
+                <ul class="feature-list">
+                    <li>Create and manage timetables</li>
+                    <li>Update course schedules</li>
+                    <li>Handle lecture room allocations</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2>For Students</h2>
+                <ul class="feature-list">
+                    <li>View program-specific timetables</li>
+                    <li>Track course schedules</li>
+                    <li>Get real-time updates</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h2>Key Features</h2>
+                <ul class="feature-list">
+                    <li>24/7 access</li>
+                    <li>Mobile-friendly access</li>
+                    <li>Downloadable schedules</li>
+                    <li>Access from anywhere, at anytime, on any device</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('sign-in-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    window.location.href = 'admin login.html';
+});
+
+    </script>
+</body>
+</html>

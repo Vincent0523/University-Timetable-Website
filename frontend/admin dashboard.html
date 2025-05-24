@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lecturer-dashboard</title>
+    <link rel="stylesheet" href="admin dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="admin dashboard.html"><i class="fa-solid fa-home"></i> Home</a></li>
+                <li><a href="admin timetable entery.html"><i class="fa-solid fa-chalkboard-teacher"></i> Add</a></li>
+                <li><a href="admin edit page.html"><i class="fa-solid fa-user-check"></i> Edit</a></li>
+                <li><a href="general timetable.html"><i class="fa-solid fa-file-alt"></i> Overview</a></li>
+                <li><a href="#"><i class="fa-solid fa-cog"></i> Settings</a></li>
+                <li><a href="admin login.html"><i class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Welcome, Admin</h1>
+            </header>
+
+            <!-- Summary Cards Section -->
+            <section class="overview">
+                <div class="card">
+                    <h3>Total Classes</h3>
+                    <p>0</p>
+                </div>
+                <div class="card">
+                    <h3>Courses</h3>
+                    <p>0</p>
+                </div>
+                <div class="card">
+                    <h3>Instructors</h3>
+                    <p>0</p>
+                </div>
+                <div class="card">
+                    <h3>Days/Week</h3>
+                    <p>5</p>
+                </div>
+            </section>
+
+            <!-- Timetable Section (Moved Below) -->
+            <section class="current-timetable">
+                <div class="filters">
+                    <div class="filter-group">
+                        <h3 style="margin-bottom: 20px; color: #2c3e50;">📅 Current Week Timetable</h3>
+                        <label for="homeCourseFilter">Filter by Course:</label>
+                        <select id="homeCourseFilter" onchange="filterHomeTimetable()">
+                            <option value="">All Courses</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="timetable-container">
+                    <table class="timetable" id="homeTimetable">
+                        <!-- Timetable will be generated here -->
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
